@@ -7,10 +7,12 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
+import cors from "cors";
+
 app.use(cors({
-  origin: '*',
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization'
+  origin: "https://dairy-shop-gray.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 app.use(express.json());
 

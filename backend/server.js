@@ -1,65 +1,48 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
 
-// Middleware
-
+// ✅ CORS (IMPORTANT)
 app.use(cors({
   origin: "https://dairy-shop-gray.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
+
+// ✅ Handle preflight (VERY IMPORTANT FIX)
+app.options('*', cors());
+
+// ✅ Body parser
 app.use(express.json());
 
-// Request logging middleware
+// ✅ Logging (optional but useful)
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log(`${req.method} ${req.url}`);
   next();
 });
 
-// Routes
+// ✅ Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/entries', require('./routes/entries'));
 
-// Health check
+// ✅ Health check
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', message: 'Dairy Shop API Root' });
+  res.send("API is running");
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Dairy Shop API is running' });
-});
+// ❌ REMOVE your old 404 temporarily (to debug)
+// We will add it later after everything works
 
-// Explicit OPTIONS handler for preflight
-// Removed to avoid conflict with global cors settings.
-
-// Catch-all route to log mismatched requests
-app.use((req, res) => {
-  console.log(`${new Date().toISOString()} - 404 NOT FOUND - ${req.method} ${req.url}`);
-  res.status(404).json({ success: false, message: `Route ${req.method} ${req.url} not found` });
-});
-
-// Serve frontend static assets in production
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
-//   });
-// }
-
+// ✅ Connect DB
 const connectDB = require('./config/db');
-
-// Connect to MongoDB
 connectDB();
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-

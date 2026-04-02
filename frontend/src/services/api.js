@@ -3,6 +3,7 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true // ✅ IMPORTANT FIX
 });
 
 export const authAPI = {
@@ -24,9 +25,8 @@ api.interceptors.response.use(
   (err) => {
     if (err.response && err.response.status === 401) {
       localStorage.removeItem('token');
-      // Intentionally hard reloading to clear out memory state on disconnect
       if (window.location.pathname !== '/login') {
-         window.location.href = '/login';
+        window.location.href = '/login';
       }
     }
     return Promise.reject(err);
@@ -42,8 +42,10 @@ export const deleteProduct = (id) => api.delete(`/products/${id}`);
 // Entries
 export const getEntries = (date) =>
   api.get('/entries', { params: date ? { date } : {} });
+
 export const createEntry = (data) => api.post('/entries', data);
 export const updateEntry = (id, data) => api.put(`/entries/${id}`, data);
 export const deleteEntry = (id) => api.delete(`/entries/${id}`);
+
 export const updateBillStatus = (billId, status) =>
   api.put(`/entries/bill/${billId}/status`, { status });

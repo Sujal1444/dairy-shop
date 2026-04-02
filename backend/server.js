@@ -16,27 +16,44 @@ const app = express();
 // ======================
 // ✅ CORS CONFIG (FIXED)
 // ======================
-const allowedOrigins = [
+const staticAllowedOrigins = new Set([
   "http://localhost:5173",
   "https://dairy-shop-gray.vercel.app",
-];
+]);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS not allowed"));
-      }
-    },
-    credentials: true,
-  }),
-);
+if (process.env.CORS_ORIGINS) {
+  process.env.CORS_ORIGINS.split(",")
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .forEach((origin) => staticAllowedOrigins.add(origin));
+}
 
-// Handle preflight requests
-app.options("*", cors());
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+
+  const normalizedOrigin = origin.replace(/\/$/, "");
+  if (staticAllowedOrigins.has(normalizedOrigin)) return true;
+
+  return /^https:\/\/dairy-shop-.*\.vercel\.app$/i.test(normalizedOrigin);
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS not allowed for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // ======================
 // MIDDLEWARE

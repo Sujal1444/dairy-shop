@@ -7,8 +7,18 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
 app.use(express.json());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -18,6 +28,15 @@ app.use('/api/entries', require('./routes/entries'));
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Dairy Shop API is running' });
+});
+
+// Explicit OPTIONS handler for preflight
+app.options('*', cors());
+
+// Catch-all route to log mismatched requests
+app.use((req, res) => {
+  console.log(`${new Date().toISOString()} - 404 NOT FOUND - ${req.method} ${req.url}`);
+  res.status(404).json({ success: false, message: `Route ${req.method} ${req.url} not found` });
 });
 
 // Serve frontend static assets in production

@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Explicit OPTIONS handler for preflight
-app.options('*', cors());
+// Removed to avoid conflict with global cors settings.
 
 // Catch-all route to log mismatched requests
 app.use((req, res) => {

@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://dairy-shop-backend.onrender.com/api/:path*"
+      "destination": "https://dairy-shop.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

@@ -1,9 +1,9 @@
 // server.js
 
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/db');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db");
 
 // Load env vars
 dotenv.config();
@@ -17,24 +17,26 @@ const app = express();
 // ✅ CORS CONFIG (FIXED)
 // ======================
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://dairy-shop-gray.vercel.app'
+  "http://localhost:5173",
+  "https://dairy-shop-gray.vercel.app",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (mobile apps, postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed'));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (mobile apps, postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  }),
+);
 
 // Handle preflight requests
-app.options('*', cors());
+app.options("*", cors());
 
 // ======================
 // MIDDLEWARE
@@ -44,15 +46,15 @@ app.use(express.json());
 // ======================
 // ROUTES
 // ======================
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/milk', require('./routes/milkRoutes')); // optional if you added
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/products", require("./routes/products"));
+app.use("/api/entries", require("./routes/entries"));
 
 // ======================
 // HEALTH CHECK
 // ======================
-app.get('/', (req, res) => {
-  res.send('API is running...');
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
 
 // ======================
@@ -63,7 +65,7 @@ app.use((err, req, res, next) => {
 
   res.status(500).json({
     success: false,
-    error: err.message || 'Server Error'
+    error: err.message || "Server Error",
   });
 });
 

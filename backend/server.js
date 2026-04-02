@@ -36,6 +36,12 @@ app.use((req, res, next) => {
 // MIDDLEWARE
 app.use(express.json());
 
+// REQUEST LOGGING (FOR DEBUGGING)
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
 // ROUTES
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/products", require("./routes/products"));

@@ -43,10 +43,11 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       setUser(res.data.user);
       addToast('Registration successful!');
-      return true;
+      return { ok: true };
     } catch (err) {
-      addToast(err.response?.data?.message || 'Registration failed', 'error');
-      return false;
+      const message = err.response?.data?.message || err.message || 'Registration failed';
+      addToast(message, 'error');
+      return { ok: false, message };
     }
   };
 

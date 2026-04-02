@@ -6,15 +6,19 @@ function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await register(name, email, password);
-    if (success) {
+    setError('');
+    const result = await register(name, email, password);
+    if (result.ok) {
       navigate('/');
+      return;
     }
+    setError(result.message || 'Signup failed');
   };
 
   return (
@@ -42,6 +46,9 @@ function Signup() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="••••••••" />
           </div>
           <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', marginTop: 10 }}>Create Account</button>
+          {error ? (
+            <p style={{ margin: 0, color: '#ff6b6b', fontSize: 13 }}>{error}</p>
+          ) : null}
         </form>
 
         <p style={{ textAlign: 'center', margin: '24px 0 0', fontSize: 13, color: 'var(--txt2)' }}>

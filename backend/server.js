@@ -26,6 +26,10 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/entries', require('./routes/entries'));
 
 // Health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Dairy Shop API Root' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Dairy Shop API is running' });
 });

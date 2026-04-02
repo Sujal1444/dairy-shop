@@ -3,7 +3,7 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true // ✅ IMPORTANT FIX
+  timeout: 15000
 });
 
 export const authAPI = {
@@ -49,3 +49,5 @@ export const deleteEntry = (id) => api.delete(`/entries/${id}`);
 
 export const updateBillStatus = (billId, status) =>
   api.put(`/entries/bill/${billId}/status`, { status });
+
+export default api;

@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useToast } from './ToastContext';
-import * as api from '../services/api'; // Or just directly from axios interceptors
+import apiClient, { setAuthToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -16,11 +15,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
-      api.setAuthToken(token);
+      setAuthToken(token);
       loadUser();
     } else {
       localStorage.removeItem('token');
-      api.setAuthToken(null);
+      setAuthToken(null);
       setUser(null);
       setLoading(false);
     }
@@ -28,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      const res = await api.authAPI.get('/me');
+      const res = await apiClient.get('/auth/me');
       setUser(res.data.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await api.authAPI.post('/register', { name, email, password });
+      const res = await apiClient.post('/auth/register', { name, email, password });
       setToken(res.data.token);
       setUser(res.data.user);
       addToast('Registration successful!');
@@ -53,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await api.authAPI.post('/login', { email, password });
+      const res = await apiClient.post('/auth/login', { email, password });
       setToken(res.data.token);
       setUser(res.data.user);
       addToast('Welcome back!');
@@ -72,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   const forgotPassword = async (email) => {
     try {
-      await api.authAPI.post('/forgotpassword', { email });
+      await apiClient.post('/auth/forgotpassword', { email });
       addToast('Password reset email sent!');
       return true;
     } catch (err) {
@@ -83,7 +82,7 @@ export const AuthProvider = ({ children }) => {
 
   const resetPassword = async (resetToken, password) => {
     try {
-      const res = await api.authAPI.put(`/resetpassword/${resetToken}`, { password });
+      const res = await apiClient.put(`/auth/resetpassword/${resetToken}`, { password });
       setToken(res.data.token);
       addToast('Password reset successful!');
       return true;

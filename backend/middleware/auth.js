@@ -29,7 +29,7 @@ exports.protect = async (req, res, next) => {
     const decoded = jwt.verify(token, getJwtSecret());
 
     req.user = await User.findById(decoded.id).select(
-      'name email createdAt updatedAt'
+      'name dairyName email createdAt updatedAt'
     );
 
     if (!req.user) {

@@ -5,6 +5,7 @@ const NAV = [
   { to: "/", icon: "📊", label: "Dashboard" },
   { to: "/products", icon: "🧴", label: "Products" },
   { to: "/bills", icon: "🧾", label: "Bills" },
+  { to: "/profile", icon: "👤", label: "Profile" },
 ];
 
 function Navbar({ isOpen, onClose }) {
@@ -54,7 +55,7 @@ function Navbar({ isOpen, onClose }) {
       <div className="nav-footer">
         <span className="status-dot" />
         <span style={{flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-          {user ? user.name : 'System Online'}
+          {user ? (user.dairyName || user.name) : 'System Online'}
         </span>
       </div>
     </nav>

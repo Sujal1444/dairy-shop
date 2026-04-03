@@ -1,11 +1,14 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Product = require("../models/Product");
+const Entry = require("../models/Entry");
 const sendEmail = require("../utils/sendEmail");
 
 const sanitizeUser = (user) => ({
   id: user._id,
   name: user.name,
+  dairyName: user.dairyName,
   email: user.email,
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
@@ -33,19 +36,20 @@ const getSignedJwtToken = (id) => {
 // ===============================
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, dairyName, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !dairyName || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, and password are required",
+        message: "Name, dairy name, email, and password are required",
       });
     }
 
     const user = await User.create({
       name: name.trim(),
+      dairyName: dairyName.trim(),
       email: email.trim().toLowerCase(),
-      password,
+      password: password.trim(),
     });
 
     const token = getSignedJwtToken(user._id);
@@ -110,6 +114,97 @@ exports.getMe = async (req, res) => {
     success: true,
     data: sanitizeUser(req.user),
   });
+};
+
+exports.updateMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("+password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const { name, dairyName, email, password } = req.body;
+
+    if (typeof name === "string") {
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        return res.status(400).json({
+          success: false,
+          message: "Name cannot be empty",
+        });
+      }
+      user.name = trimmedName;
+    }
+
+    if (typeof dairyName === "string") {
+      const trimmedDairyName = dairyName.trim();
+      if (!trimmedDairyName) {
+        return res.status(400).json({
+          success: false,
+          message: "Dairy name cannot be empty",
+        });
+      }
+      user.dairyName = trimmedDairyName;
+    }
+
+    if (typeof email === "string") {
+      const normalizedEmail = email.trim().toLowerCase();
+      if (!normalizedEmail) {
+        return res.status(400).json({
+          success: false,
+          message: "Email cannot be empty",
+        });
+      }
+      user.email = normalizedEmail;
+    }
+
+    if (typeof password === "string" && password.trim()) {
+      if (password.trim().length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 6 characters",
+        });
+      }
+      user.password = password.trim();
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      user: sanitizeUser(user),
+      message: "Profile updated successfully",
+    });
+  } catch (err) {
+    res.status(err.statusCode || 400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+exports.deleteMe = async (req, res) => {
+  try {
+    await Promise.all([
+      Entry.deleteMany({ user: req.user.id }),
+      Product.deleteMany({ user: req.user.id }),
+      User.findByIdAndDelete(req.user.id),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (err) {
+    res.status(err.statusCode || 400).json({
+      success: false,
+      message: err.message,
+    });
+  }
 };
 
 // ===============================

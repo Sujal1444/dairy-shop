@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 
 function Signup() {
   const [name, setName] = useState('');
+  const [dairyName, setDairyName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,7 +14,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    const result = await register(name, email, password);
+    const result = await register(name, dairyName, email, password);
     if (result.ok) {
       navigate('/');
       return;
@@ -34,8 +35,12 @@ function Signup() {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div className="form-group">
-            <label>Shop Name / Owner Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Sujal Dairy" />
+            <label>Owner Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Sujal Patel" />
+          </div>
+          <div className="form-group">
+            <label>Dairy Name</label>
+            <input type="text" value={dairyName} onChange={(e) => setDairyName(e.target.value)} required placeholder="Sujal Dairy" />
           </div>
           <div className="form-group">
             <label>Email Address</label>

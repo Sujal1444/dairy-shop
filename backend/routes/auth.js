@@ -3,6 +3,8 @@ const {
   register,
   login,
   getMe,
+  updateMe,
+  deleteMe,
   forgotPassword,
   resetPassword,
 } = require("../controllers/authController");
@@ -28,6 +30,8 @@ router.options("*", (req, res) => {
 router.post("/register", authRateLimit, register);
 router.post("/login", authRateLimit, login);
 router.get("/me", protect, getMe);
+router.put("/me", protect, updateMe);
+router.delete("/me", protect, deleteMe);
 router.post("/forgotpassword", authRateLimit, forgotPassword);
 router.put("/resetpassword/:resettoken", authRateLimit, resetPassword);
 

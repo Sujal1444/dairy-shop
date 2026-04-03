@@ -13,6 +13,7 @@ export const authAPI = {
   post: (url, data) => api.post(`/auth${url}`, data),
   get: (url) => api.get(`/auth${url}`),
   put: (url, data) => api.put(`/auth${url}`, data),
+  delete: (url) => api.delete(`/auth${url}`),
 };
 
 export const setAuthToken = (token) => {

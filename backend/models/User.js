@@ -6,6 +6,12 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Please add a name'],
+      trim: true,
+    },
+    dairyName: {
+      type: String,
+      required: [true, 'Please add a dairy name'],
+      trim: true,
     },
     email: {
       type: String,
@@ -22,6 +28,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
       minlength: 6,
+      trim: true,
       select: false,
     },
     resetPasswordToken: String,

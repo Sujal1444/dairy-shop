@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { useToast } from './ToastContext';
-import apiClient, { setAuthToken } from '../services/api';
+import apiClient, { authAPI, setAuthToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, dairyName, email, password) => {
     try {
-      const res = await apiClient.post('/auth/register', { name, email, password });
+      const res = await apiClient.post('/auth/register', { name, dairyName, email, password });
       setToken(res.data.token);
       setUser(res.data.user);
       addToast('Registration successful!');
@@ -93,8 +93,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (payload) => {
+    try {
+      const res = await authAPI.put('/me', payload);
+      setUser(res.data.user);
+      addToast(res.data.message || 'Profile updated successfully');
+      return { ok: true, user: res.data.user };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Failed to update profile';
+      addToast(message, 'error');
+      return { ok: false, message };
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      await authAPI.delete('/me');
+      setToken(null);
+      setUser(null);
+      addToast('Account deleted successfully');
+      return true;
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Failed to delete account', 'error');
+      return false;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, register, login, logout, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, token, loading, register, login, logout, forgotPassword, resetPassword, updateProfile, deleteAccount }}>
       {!loading && children}
     </AuthContext.Provider>
   );

@@ -11,10 +11,22 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-// CORS CONFIG (PERMISSIVE)
+// Allow requests only from trusted frontends.
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  const origin = req.headers.origin;
+  const isAllowedOrigin =
+    !origin ||
+    allowedOrigins.length === 0 ||
+    allowedOrigins.includes(origin);
+
+  if (origin && isAllowedOrigin) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header(
     "Access-Control-Allow-Methods",
     "GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD",
@@ -27,7 +39,14 @@ app.use((req, res, next) => {
   res.header("Vary", "Origin, Access-Control-Request-Headers");
 
   if (req.method === "OPTIONS") {
+    if (!isAllowedOrigin) {
+      return res.status(403).json({ success: false, message: "Origin not allowed" });
+    }
     return res.sendStatus(204);
+  }
+
+  if (!isAllowedOrigin) {
+    return res.status(403).json({ success: false, message: "Origin not allowed" });
   }
 
   next();

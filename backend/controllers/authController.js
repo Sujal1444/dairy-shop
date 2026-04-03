@@ -3,9 +3,25 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 
+const sanitizeUser = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
+
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not configured");
+  }
+
+  return process.env.JWT_SECRET;
+};
+
 // ✅ JWT helper
 const getSignedJwtToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || "secret123", {
+  return jwt.sign({ id }, getJwtSecret(), {
     expiresIn: process.env.JWT_EXPIRE || "30d",
   });
 };
@@ -17,18 +33,25 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const user = await User.create({ name, email, password });
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, email, and password are required",
+      });
+    }
+
+    const user = await User.create({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password,
+    });
 
     const token = getSignedJwtToken(user._id);
 
     res.status(201).json({
       success: true,
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user: sanitizeUser(user),
     });
   } catch (err) {
     res.status(400).json({
@@ -43,7 +66,8 @@ exports.register = async (req, res) => {
 // ===============================
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const { password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -66,11 +90,7 @@ exports.login = async (req, res) => {
     res.status(200).json({
       success: true,
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user: sanitizeUser(user),
     });
   } catch (err) {
     res.status(400).json({
@@ -86,7 +106,7 @@ exports.login = async (req, res) => {
 exports.getMe = async (req, res) => {
   res.status(200).json({
     success: true,
-    data: req.user,
+    data: sanitizeUser(req.user),
   });
 };
 
@@ -95,7 +115,8 @@ exports.getMe = async (req, res) => {
 // ===============================
 exports.forgotPassword = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const email = req.body.email?.trim().toLowerCase();
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({

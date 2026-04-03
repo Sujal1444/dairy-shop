@@ -1,6 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+
+  return process.env.JWT_SECRET;
+};
+
 exports.protect = async (req, res, next) => {
   let token;
 
@@ -16,9 +24,11 @@ exports.protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+    const decoded = jwt.verify(token, getJwtSecret());
 
-    req.user = await User.findById(decoded.id);
+    req.user = await User.findById(decoded.id).select(
+      'name email createdAt updatedAt'
+    );
 
     if (!req.user) {
       return res.status(401).json({ success: false, message: 'User not found' });

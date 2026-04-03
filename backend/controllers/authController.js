@@ -13,7 +13,9 @@ const sanitizeUser = (user) => ({
 
 const getJwtSecret = () => {
   if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not configured");
+    const error = new Error("JWT_SECRET is not configured");
+    error.statusCode = 500;
+    throw error;
   }
 
   return process.env.JWT_SECRET;
@@ -54,7 +56,7 @@ exports.register = async (req, res) => {
       user: sanitizeUser(user),
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(err.statusCode || 400).json({
       success: false,
       message: err.message,
     });
@@ -93,7 +95,7 @@ exports.login = async (req, res) => {
       user: sanitizeUser(user),
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(err.statusCode || 400).json({
       success: false,
       message: err.message,
     });
@@ -185,7 +187,7 @@ exports.resetPassword = async (req, res) => {
       token,
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(err.statusCode || 400).json({
       success: false,
       message: err.message,
     });

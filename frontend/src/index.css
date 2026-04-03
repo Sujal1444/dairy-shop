@@ -440,3 +440,48 @@ input, select, textarea { font-family: inherit; }
   color: var(--txt); padding: 12px 14px; font-size: 14px; transition: var(--t); width: 100%;
 }
 .form-group input:focus { border-color: var(--cyan); box-shadow: 0 0 0 4px var(--cyan-g); }
+
+.password-field {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 48px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--txt2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--t);
+}
+
+.password-toggle:hover {
+  color: var(--cyan);
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.forgot-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cyan);
+}
+
+.forgot-link:hover {
+  color: #22d3ee;
+}

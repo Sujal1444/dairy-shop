@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Entries from "./pages/Entries";
 import Profile from "./pages/Profile";
+import NewOrder from "./pages/NewOrder";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -42,6 +43,7 @@ const MainLayout = ({ isNavOpen, setIsNavOpen }) => {
           <Route path="/products" element={<Products />} />
           <Route path="/bills" element={<Entries />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/new-order" element={<NewOrder />} />
         </Routes>
       </main>
     </div>

@@ -5,18 +5,12 @@ const NAV = [
   { to: "/", icon: "📊", label: "Dashboard" },
   { to: "/products", icon: "🧴", label: "Products" },
   { to: "/bills", icon: "🧾", label: "Bills" },
-  { to: "/profile", icon: "👤", label: "Profile" },
+  { to: "/new-order", icon: "🛒", label: "New Order" },
 ];
 
 function Navbar({ isOpen, onClose }) {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-    if (onClose) onClose();
-  };
 
   return (
     <nav className={`navbar${isOpen ? " open" : ""}`}>
@@ -45,10 +39,16 @@ function Navbar({ isOpen, onClose }) {
           </li>
         ))}
         <li style={{ marginTop: 'auto' }}>
-          <button onClick={handleLogout} className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'transparent', border: 'none' }}>
-            <span className="nav-icon">🚪</span>
-            <span>Logout</span>
-          </button>
+          <NavLink
+            to="/profile"
+            onClick={onClose}
+            className={({ isActive }) =>
+              `nav-link${isActive ? " active" : ""}`
+            }
+          >
+            <span className="nav-icon">👤</span>
+            <span>Profile</span>
+          </NavLink>
         </li>
       </ul>
 

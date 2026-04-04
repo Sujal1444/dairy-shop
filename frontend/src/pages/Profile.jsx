@@ -4,7 +4,7 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 
 function Profile() {
-  const { user, updateProfile, deleteAccount } = useAuth();
+  const { user, updateProfile, deleteAccount, logout } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -15,6 +15,11 @@ function Profile() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -64,10 +69,14 @@ function Profile() {
   return (
     <div className="page">
       <div className="page-header">
-        <div>
+        <div style={{ flex: 1 }}>
           <h1 className="page-title">Profile Settings</h1>
           <p className="page-sub">Update your account details and dairy information</p>
         </div>
+        <button onClick={handleLogout} className="btn btn-ghost" style={{ gap: '10px' }}>
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
       </div>
 
       <div className="profile-layout">

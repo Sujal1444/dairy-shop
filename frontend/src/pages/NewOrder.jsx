@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getProducts, createEntry } from "../services/api";
 import { useToast } from "../context/ToastContext";
 
@@ -20,12 +20,13 @@ const ROW_COLORS = [
 
 const todayStr = () => new Date().toISOString().split("T")[0];
 
+const CUSTOMER_ID = "3292";
+
 function NewOrder() {
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [customerName, setCustomerName] = useState("");
   const [date, setDate] = useState(todayStr());
   const { addToast } = useToast();
 
@@ -72,10 +73,6 @@ function NewOrder() {
       addToast("Please add at least one product", "error");
       return;
     }
-    if (!customerName.trim()) {
-      addToast("Please enter a customer name", "error");
-      return;
-    }
     setSubmitting(true);
     try {
       const billId = `BILL-${Date.now()}`;
@@ -84,15 +81,14 @@ function NewOrder() {
         productId: p._id,
         quantity: quantities[p._id],
         billId,
-        billName: customerName.trim(),
+        billName: CUSTOMER_ID,
         date,
         time,
         status: "unpaid",
       }));
       await Promise.all(entries.map((e) => createEntry(e)));
-      addToast(`Order placed for ${customerName}!`, "success");
+      addToast(`Order placed! (ગ્રાહક નં: ${CUSTOMER_ID})`, "success");
       handleReset();
-      setCustomerName("");
     } catch (err) {
       addToast(err.response?.data?.message || "Failed to place order", "error");
     } finally {
@@ -110,14 +106,8 @@ function NewOrder() {
         </div>
         <div className="no-header-right">
           <div className="no-customer-wrap">
-            <span className="no-customer-label">ગ્રાહક</span>
-            <input
-              type="text"
-              className="no-customer-input"
-              placeholder="નામ / Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-            />
+            <span className="no-customer-label">ગ્રાહક નં:</span>
+            <span className="no-customer-static">{CUSTOMER_ID}</span>
           </div>
           <input
             type="date"

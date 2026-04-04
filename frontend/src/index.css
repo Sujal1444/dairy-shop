@@ -625,6 +625,14 @@ input, select, textarea { font-family: inherit; }
 }
 .no-customer-input::placeholder { color: var(--txt3); font-weight: 400; }
 
+.no-customer-static {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
 .no-date-input {
   background: var(--bg3);
   border: 1px solid var(--border);

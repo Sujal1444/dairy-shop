@@ -1,0 +1,133 @@
+/* ─── CARDS ──────────────────────────────────────── */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; backdrop-filter: blur(10px); }
+
+.summary-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 24px; transition: var(--t); position: relative; overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+.summary-card:hover { background: var(--card-h); transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(255,255,255,0.15); }
+.sc-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.sc-icon {
+  width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; background: rgba(255,255,255,0.05);
+}
+.sc-title { font-size: 12px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.8px; }
+.sc-value { font-size: 32px; font-weight: 800; color: var(--txt); letter-spacing: -1px; }
+
+/* ─── TABLE ──────────────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl thead tr { border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+.tbl th {
+  padding: 16px 20px; text-align: left; font-size: 11px; font-weight: 700;
+  color: var(--txt3); text-transform: uppercase; letter-spacing: 1px;
+}
+.tbl td { padding: 16px 20px; font-size: 14px; color: var(--txt); border-bottom: 1px solid var(--border2); transition: var(--t); }
+.tbl tbody tr:hover { background: var(--card-h); }
+.tbl-total { background: rgba(16,185,129,0.05) !important; }
+
+/* Table responsive cards for mobile */
+@media (max-width: 640px) {
+  .tbl thead { display: none; }
+  .tbl tbody tr { display: block; background: var(--bg3); border-radius: var(--r2); margin-bottom: 16px; padding: 12px; border: 1px solid var(--border); }
+  .tbl td { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border: none; font-size: 13px; }
+  .tbl td::before { content: attr(data-label); font-weight: 700; color: var(--txt3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+}
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+  border-radius: var(--r2); font-size: 14px; font-weight: 600; border: 1px solid transparent;
+  transition: var(--t); white-space: nowrap;
+}
+.btn-primary { background: linear-gradient(135deg, var(--cyan), var(--cyan-d)); color: #fff; box-shadow: var(--cyan-s); }
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 30px var(--cyan-g); }
+.btn-ghost { background: var(--card); color: var(--txt2); border-color: var(--border); }
+.btn-ghost:hover:not(:disabled) { background: var(--card-h); color: var(--txt); }
+
+.icon-btn {
+  width: 32px; height: 32px; border-radius: var(--r2); border: 1px solid var(--border);
+  background: var(--card); font-size: 14px; display: flex; align-items: center; justify-content: center;
+  transition: var(--t); color: var(--txt2);
+}
+.icon-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.icon-btn.edit:hover { background: var(--cyan-g); border-color: var(--cyan); color: var(--cyan); }
+.icon-btn.del:hover { background: var(--red-g); border-color: var(--red); color: var(--red); }
+.icon-btn.success:hover { background: var(--green-g); border-color: var(--green); color: var(--green); }
+
+/* ─── BADGES ─────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px;
+  font-weight: 700; background: var(--cyan-g); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2);
+  letter-spacing: 0.5px;
+}
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.status-unpaid { background: var(--red-g); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+.status-paid { background: var(--green-g); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+
+/* ─── OVERLAY & MODAL ────────────────────────────── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; z-index: 2000;
+  animation: fadeIn .2s ease; padding: 20px;
+}
+.modal {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
+  width: 100%; max-width: 480px; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  animation: slideUp .3s cubic-bezier(.4,0,.2,1); max-height: 90vh; overflow-y: auto;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.modal-header h2 { font-size: 20px; font-weight: 800; color: var(--txt); letter-spacing: -0.5px; }
+
+.close-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--card); color: var(--txt2); font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: var(--t);
+}
+.close-btn:hover { background: var(--red-g); color: var(--red); border-color: var(--red); transform: rotate(90deg); }
+
+/* ─── FORMS ──────────────────────────────────────── */
+.form-group label { font-size: 11px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+.form-group input, .form-group select {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2);
+  color: var(--txt); padding: 12px 14px; font-size: 14px; transition: var(--t); width: 100%;
+}
+.form-group input:focus { border-color: var(--cyan); box-shadow: 0 0 0 4px var(--cyan-g); }
+/* ─── PASSWORD FIELD ────────────────────────────── */
+.password-field {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 48px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--txt2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--t);
+  padding: 0;
+}
+
+.password-toggle:hover {
+  color: var(--cyan);
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}

@@ -32,7 +32,6 @@ function Bills() {
     finally { setLoading(false); }
   };
 
-  // Group entries by billId into bill objects
   const allBills = useMemo(() => {
     const map = {};
     entries.forEach((e) => {
@@ -55,15 +54,12 @@ function Bills() {
   }, [entries]);
 
   const pendingBills = useMemo(() => allBills.filter((b) => b.status === "unpaid"), [allBills]);
-  const paidBills = useMemo(() => allBills.filter((b) => b.status === "paid"), [allBills]);
-
+  const paidBills   = useMemo(() => allBills.filter((b) => b.status === "paid"),   [allBills]);
   const totalRevenue = useMemo(() => allBills.reduce((s, b) => s + b.total, 0), [allBills]);
 
   const handleSubmit = async (newEntries) => {
     try {
-      if (editBill) {
-        await Promise.all(editBill.items.map((e) => deleteEntry(e._id)));
-      }
+      if (editBill) await Promise.all(editBill.items.map((e) => deleteEntry(e._id)));
       await Promise.all(newEntries.map((e) => createEntry(e)));
       addToast(editBill ? "Bill updated!" : "Bill created!");
       setShowForm(false);
@@ -105,11 +101,11 @@ function Bills() {
     text += `Date: ${date}  Time: ${bill.time}\r\n`;
     text += `------------------------\r\n`;
     bill.items.forEach((item) => {
-      const name = item.productId?.name || "Item";
-      const unit = item.productId?.unit || "";
+      const name  = item.productId?.name || "Item";
+      const unit  = item.productId?.unit || "";
       const price = item.productId?.price || 0;
-      const qty = item.quantity;
-      const sub = (price * qty).toFixed(2);
+      const qty   = item.quantity;
+      const sub   = (price * qty).toFixed(2);
       text += `${name.substring(0, 15).padEnd(15)} ${qty}${unit}  ₹${sub}\r\n`;
     });
     text += `------------------------\r\n`;
@@ -117,123 +113,133 @@ function Bills() {
     text += `STATUS:           ${bill.status === "paid" ? "PAID" : "UNPAID"}\r\n`;
     text += `========================\r\n`;
     text += `      Thank You!        \r\n`;
-
     const blob = new Blob([text], { type: "text/plain" });
-    const a = Object.assign(document.createElement("a"), { 
-      href: URL.createObjectURL(blob), 
-      download: `Bill_${(bill.billName || "Customer").replace(/\s+/g, '_')}_${bill.billId.substring(0,8)}.txt` 
+    const a = Object.assign(document.createElement("a"), {
+      href: URL.createObjectURL(blob),
+      download: `Bill_${(bill.billName || "Customer").replace(/\s+/g, "_")}_${bill.billId.substring(0, 8)}.txt`,
     });
     a.click();
-    addToast(`Bill downloaded successfully!`);
+    addToast("Bill downloaded successfully!");
   };
 
   const exportCSV = () => {
     const rows = [
       ["Bill ID", "Bill Name", "Status", "Time", "Product", "Qty", "Price", "Subtotal"],
       ...entries.map((e) => [
-        e.billId, e.billName, e.status, e.time, e.productId?.name, e.quantity, e.productId?.price,
-        (e.productId?.price * e.quantity).toFixed(2)
+        e.billId, e.billName, e.status, e.time, e.productId?.name, e.quantity,
+        e.productId?.price, (e.productId?.price * e.quantity).toFixed(2),
       ]),
     ];
     const blob = new Blob([rows.map((r) => r.join(",")).join("\n")], { type: "text/csv" });
-    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `bills-${date}.csv` });
+    const a = Object.assign(document.createElement("a"), {
+      href: URL.createObjectURL(blob),
+      download: `bills-${date}.csv`,
+    });
     a.click();
   };
 
-  const BillTable = ({ billsList, title }) => (
-    <>
-      <div className="bill-section-header">
-        <h2>{title} ({billsList.length})</h2>
-        <div className="bill-section-line" />
-      </div>
-      <div className="card">
-        {billsList.length === 0 ? (
-          <div className="empty-state">
-            <p>No {title.toLowerCase()} for today.</p>
+  /* ─── Bill Card Component ─────────────────────── */
+  const BillCard = ({ bill }) => {
+    const isExpanded = expandedBill === bill.billId;
+    const isPaid = bill.status === "paid";
+    return (
+      <div className={`bill-card ${isPaid ? "bill-card-paid" : "bill-card-unpaid"} ${isExpanded ? "bill-card-open" : ""}`}>
+        {/* Card Header — clickable to expand */}
+        <div className="bill-card-head" onClick={() => setExpandedBill(isExpanded ? null : bill.billId)}>
+          <div className="bill-card-left">
+            <div className={`bill-avatar ${isPaid ? "bill-avatar-paid" : "bill-avatar-unpaid"}`}>
+              {bill.billName.charAt(0).toUpperCase()}
+            </div>
+            <div className="bill-card-info">
+              <div className="bill-card-name">{bill.billName}</div>
+              <div className="bill-card-meta">
+                <span className="bill-meta-time">🕐 {bill.time}</span>
+                <span className="bill-meta-items">{bill.items.length} item{bill.items.length !== 1 ? "s" : ""}</span>
+              </div>
+            </div>
           </div>
-        ) : (
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th className="desktop-only" style={{ width: 36 }} />
-                <th>Bill Name</th>
-                <th className="desktop-only">Bill ID</th>
-                <th>Time</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {billsList.map((bill) => (
-                <>
-                  <tr
-                    key={bill.billId}
-                    className={`bill-row ${expandedBill === bill.billId ? "bill-row-open" : ""}`}
-                    onClick={() => setExpandedBill(expandedBill === bill.billId ? null : bill.billId)}
-                  >
-                    <td className="desktop-only">
-                      <span className={`expand-arr ${expandedBill === bill.billId ? "open" : ""}`}>▶</span>
-                    </td>
-                    <td data-label="Bill Name"><strong>{bill.billName}</strong></td>
-                    <td className="desktop-only" data-label="Bill ID"><span className="bill-id-badge">{bill.billId}</span></td>
-                    <td className="clr-muted" data-label="Time">{bill.time}</td>
-                    <td data-label="Total"><strong className="clr-green">₹{bill.total.toFixed(2)}</strong></td>
-                    <td data-label="Status">
-                      <span className={`status-badge status-${bill.status}`}>
-                        {bill.status === "paid" ? "✓ Paid" : "⚠ Unpaid"}
-                      </span>
-                    </td>
-                    <td data-label="Actions" onClick={(e) => e.stopPropagation()}>
-                      <div className="actions">
-                        <button
-                          className={`icon-btn ${bill.status === "paid" ? "edit" : "success"}`}
-                          title={bill.status === "paid" ? "Mark as Unpaid" : "Mark as Paid"}
-                          onClick={() => handleToggleStatus(bill.billId, bill.status)}
-                          style={{ color: bill.status === "paid" ? "var(--txt2)" : "var(--green)" }}
-                        >
-                          {bill.status === "paid" ? "↩" : "✓"}
-                        </button>
-                        <button className="icon-btn edit" title="Download Receipt" onClick={(e) => { e.stopPropagation(); downloadBillReceipt(bill); }}>📥</button>
-                        <button className="icon-btn edit" title="Edit Bill" onClick={(e) => { e.stopPropagation(); setEditBill(bill); setShowForm(true); }}>✏️</button>
-                        <button className="icon-btn del" onClick={() => setDeleteBillId(bill.billId)}>🗑️</button>
-                      </div>
-                    </td>
-                  </tr>
-                  {expandedBill === bill.billId && (
-                    <tr key={bill.billId + "-exp"} className="bill-detail-row">
-                      <td colSpan={7}>
-                        <div className="bill-detail">
-                          <table className="bill-inner-tbl">
-                            <thead>
-                              <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
-                            </thead>
-                            <tbody>
-                              {bill.items.map((item) => (
-                                <tr key={item._id}>
-                                  <td><strong>{item.productId?.name}</strong></td>
-                                  <td>{item.quantity} {item.productId?.unit}</td>
-                                  <td>₹{item.productId?.price}</td>
-                                  <td className="clr-green">₹{(item.productId?.price * item.quantity).toFixed(2)}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </>
+          <div className="bill-card-right">
+            <div className="bill-card-total">₹{bill.total.toFixed(2)}</div>
+            <span className={`status-badge status-${bill.status}`}>
+              {isPaid ? "✓ Paid" : "⚠ Unpaid"}
+            </span>
+          </div>
+          <div className={`bill-card-chevron ${isExpanded ? "open" : ""}`}>›</div>
+        </div>
+
+        {/* Expanded item details */}
+        {isExpanded && (
+          <div className="bill-card-body">
+            <div className="bill-items-list">
+              {bill.items.map((item) => (
+                <div className="bill-item-row" key={item._id}>
+                  <div className="bill-item-name">{item.productId?.name}</div>
+                  <div className="bill-item-detail">
+                    <span className="bill-item-qty">{item.quantity} {item.productId?.unit}</span>
+                    <span className="bill-item-x">×</span>
+                    <span className="bill-item-price">₹{item.productId?.price}</span>
+                    <span className="bill-item-sub">= ₹{(item.productId?.price * item.quantity).toFixed(2)}</span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+            <div className="bill-card-total-row">
+              <span>Total</span>
+              <span className="bill-grand-total">₹{bill.total.toFixed(2)}</span>
+            </div>
+            {/* Action buttons */}
+            <div className="bill-card-actions" onClick={(e) => e.stopPropagation()}>
+              <button
+                className={`bill-action-btn ${isPaid ? "bill-act-warn" : "bill-act-success"}`}
+                onClick={() => handleToggleStatus(bill.billId, bill.status)}
+              >
+                {isPaid ? "↩ Unmark" : "✓ Mark Paid"}
+              </button>
+              <button
+                className="bill-action-btn bill-act-neutral"
+                onClick={() => downloadBillReceipt(bill)}
+              >
+                📥 Receipt
+              </button>
+              <button
+                className="bill-action-btn bill-act-neutral"
+                onClick={() => { setEditBill(bill); setShowForm(true); }}
+              >
+                ✏️ Edit
+              </button>
+              <button
+                className="bill-action-btn bill-act-danger"
+                onClick={() => setDeleteBillId(bill.billId)}
+              >
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
         )}
       </div>
+    );
+  };
+
+  /* ─── Bill Section ────────────────────────────── */
+  const BillSection = ({ billsList, title, icon, emptyMsg }) => (
+    <>
+      <h2 className="section-title">{icon} {title} <span className="section-count">{billsList.length}</span></h2>
+      {billsList.length === 0 ? (
+        <div className="bills-empty">
+          <div className="bills-empty-icon">🧾</div>
+          <p>{emptyMsg}</p>
+        </div>
+      ) : (
+        <div className="bills-list">
+          {billsList.map((bill) => <BillCard key={bill.billId} bill={bill} />)}
+        </div>
+      )}
     </>
   );
 
   return (
     <div className="page">
+      {/* ─── Header ─────────────────────────────── */}
       <div className="page-header">
         <div>
           <h1 className="page-title">Bills</h1>
@@ -241,39 +247,70 @@ function Bills() {
         </div>
         <div className="header-right">
           <div className="date-filter">
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <label htmlFor="bills-date">📅</label>
+            <input id="bills-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <button className="btn btn-ghost" onClick={exportCSV}>📥 Export</button>
           <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ Create Bill</button>
         </div>
       </div>
 
+      {/* ─── Summary Pills ───────────────────────── */}
       {!loading && (
-        <div className="bills-summary">
-          <div className="bill-stat"><span>Pending</span><strong>{pendingBills.length}</strong></div>
-          <div className="bill-stat"><span>Paid</span><strong>{paidBills.length}</strong></div>
-          <div className="bill-stat"><span>Today's Total</span><strong className="clr-green">₹{totalRevenue.toFixed(2)}</strong></div>
+        <div className="bills-summary-row">
+          <div className="bill-pill bill-pill-warn">
+            <span className="bill-pill-icon">⚠</span>
+            <div>
+              <div className="bill-pill-val">{pendingBills.length}</div>
+              <div className="bill-pill-label">Pending</div>
+            </div>
+          </div>
+          <div className="bill-pill bill-pill-success">
+            <span className="bill-pill-icon">✓</span>
+            <div>
+              <div className="bill-pill-val">{paidBills.length}</div>
+              <div className="bill-pill-label">Paid</div>
+            </div>
+          </div>
+          <div className="bill-pill bill-pill-total">
+            <span className="bill-pill-icon">₹</span>
+            <div>
+              <div className="bill-pill-val">₹{totalRevenue.toFixed(2)}</div>
+              <div className="bill-pill-label">Today's Total</div>
+            </div>
+          </div>
         </div>
       )}
 
+      {/* ─── Content ─────────────────────────────── */}
       {loading ? (
         <div className="loader"><div className="spinner" /></div>
       ) : (
         <>
-          <BillTable billsList={pendingBills} title="Pending Bills" />
-          
-          <div style={{ marginTop: 40, textAlign: 'center' }}>
-            <button 
-              className={`paid-toggle-btn ${showPastBills ? 'active' : ''}`}
+          <BillSection
+            billsList={pendingBills}
+            title="Pending Bills"
+            icon="⚠"
+            emptyMsg="No pending bills for today."
+          />
+
+          <div className="bills-past-toggle">
+            <button
+              className={`paid-toggle-btn ${showPastBills ? "active" : ""}`}
               onClick={() => setShowPastBills(!showPastBills)}
             >
-              {showPastBills ? "Hide Past Bills" : `Show Past Bills (${paidBills.length})`}
+              {showPastBills ? "▲ Hide Paid Bills" : `▼ Show Paid Bills (${paidBills.length})`}
             </button>
           </div>
 
           {showPastBills && (
-            <div style={{ animation: 'fadeUp 0.3s ease' }}>
-              <BillTable billsList={paidBills} title="Past Bills" />
+            <div style={{ animation: "fadeUp 0.3s ease" }}>
+              <BillSection
+                billsList={paidBills}
+                title="Paid Bills"
+                icon="✓"
+                emptyMsg="No paid bills for today."
+              />
             </div>
           )}
         </>

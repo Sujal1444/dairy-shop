@@ -102,7 +102,7 @@ function BillForm({ bill, products, onSubmit, onClose }) {
             </div>
           </div>
 
-          {/* Column Headers */}
+          {/* Column Headers (Desktop Only) */}
           <div className="bill-prod-header">
             <span style={{ flex: 2.5 }}>Product *</span>
             <span style={{ flex: 1 }}>Qty *</span>
@@ -111,7 +111,7 @@ function BillForm({ bill, products, onSubmit, onClose }) {
             <span style={{ width: 32 }} />
           </div>
 
-          {/* Product Rows */}
+          {/* Product Rows / Cards */}
           <div className="bill-prod-list">
             {rows.map((row) => {
               const prod = getProduct(row.productId);
@@ -135,7 +135,7 @@ function BillForm({ bill, products, onSubmit, onClose }) {
                       type="number"
                       value={row.quantity}
                       onChange={(e) => updateRow(row.id, "quantity", e.target.value)}
-                      placeholder="0"
+                      placeholder="Qty"
                       min="0.01"
                       step="0.01"
                       className={`form-input ${errors[`${row.id}_quantity`] ? "input-err" : ""}`}
@@ -143,21 +143,21 @@ function BillForm({ bill, products, onSubmit, onClose }) {
                     {errors[`${row.id}_quantity`] && <span className="err-msg">{errors[`${row.id}_quantity`]}</span>}
                   </div>
 
-                  {/* Unit Price (readonly display) */}
+                  {/* Unit Price */}
                   <div style={{ flex: 1 }}>
-                    <div className="price-cell">
+                    <div className="price-cell" data-label="Unit Price">
                       {prod ? `₹${prod.price}/${prod.unit}` : "—"}
                     </div>
                   </div>
 
-                  {/* Subtotal (calculated) */}
+                  {/* Subtotal */}
                   <div style={{ flex: 1 }}>
-                    <div className={`price-cell ${sub > 0 ? "clr-green" : ""}`}>
+                    <div className={`price-cell ${sub > 0 ? "clr-green" : ""}`} data-label="Subtotal">
                       {sub > 0 ? `₹${sub.toFixed(2)}` : "—"}
                     </div>
                   </div>
 
-                  {/* Remove */}
+                  {/* Remove Button */}
                   <button
                     type="button"
                     className="remove-row-btn"

@@ -1,6 +1,7 @@
 // server.js
 
 const express = require("express");
+const morgan = require("morgan");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 
@@ -55,11 +56,8 @@ app.use((req, res, next) => {
 // MIDDLEWARE
 app.use(express.json());
 
-// REQUEST LOGGING (FOR DEBUGGING)
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
+// REQUEST LOGGING
+app.use(morgan("dev"));
 
 // ROUTES
 app.use("/api/auth", require("./routes/auth"));

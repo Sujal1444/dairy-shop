@@ -123,7 +123,7 @@ function Dashboard() {
           {stats.breakdown.length > 0 ? (
             <>
               <h2 className="section-title">Product-wise Summary</h2>
-              <div className="card">
+              <div className="card dash-chart-card">
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart
                     data={stats.breakdown}
@@ -162,72 +162,69 @@ function Dashboard() {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-                <table className="tbl">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Qty Sold</th>
-                      <th>Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.breakdown.map((p, i) => (
-                      <tr key={i}>
-                        <td>
-                          <strong>{p.name}</strong>
-                        </td>
-                         <td>
-                          <span className="qty-val">{p.quantity.toFixed(2)}</span>
-                          {" "}
-                          <span className="qty-unit">{p.unit}</span>
-                        </td>
-                        <td className="clr-green">₹{p.revenue.toFixed(2)}</td>
-                      </tr>
-                    ))}
-                      <tr className="tbl-total">
-                      <td colSpan={2}>
-                        <div className="total-label">Grand Total</div>
-                      </td>
-                      <td className="clr-green">
-                        <strong>₹{stats.totalRevenue.toFixed(2)}</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              </div>
+
+              <div className="product-col-grid">
+                {stats.breakdown.map((p, i) => (
+                  <div className="product-col-card" key={i} style={{ "--accent": COLORS[i % COLORS.length] }}>
+                    <div className="pcol-accent-bar" />
+                    <div className="pcol-header">
+                      <div className="pcol-icon" style={{ background: COLORS[i % COLORS.length] + "22" }}>
+                        🛒
+                      </div>
+                    </div>
+                    <div className="pcol-name">{p.name}</div>
+                    <div className="pcol-divider" />
+                    <div className="pcol-stats">
+                      <div className="pcol-stat">
+                        <span className="pcol-stat-label">Qty Sold</span>
+                        <span className="pcol-stat-val">
+                          {p.quantity.toFixed(2)} <span className="pcol-unit">{p.unit}</span>
+                        </span>
+                      </div>
+                      <div className="pcol-stat">
+                        <span className="pcol-stat-label">Revenue</span>
+                        <span className="pcol-revenue-pill">₹{p.revenue.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="product-col-card pcol-total" style={{ "--accent": "#10b981" }}>
+                  <div className="pcol-accent-bar" />
+                  <div className="pcol-header">
+                    <div className="pcol-icon" style={{ background: "rgba(16,185,129,0.15)" }}>📊</div>
+                  </div>
+                  <div className="pcol-name">Grand Total</div>
+                  <div className="pcol-divider" />
+                  <div className="pcol-stats">
+                    <div className="pcol-stat">
+                      <span className="pcol-stat-label">All Revenue</span>
+                      <span className="pcol-revenue-pill">₹{stats.totalRevenue.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <h2 className="section-title">Recent Entries</h2>
-              <div className="card">
-                <table className="tbl">
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Product</th>
-                      <th>Bill Name</th>
-                      <th>Qty</th>
-                      <th>Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {entries.slice(0, 10).map((e) => (
-                      <tr key={e._id}>
-                        <td className="clr-muted">{e.time}</td>
-                        <td>
-                          <strong>{e.productId?.name}</strong>
-                        </td>
-                        <td className="clr-muted">{e.billName || e.customerName || "—"}</td>
-                        <td>
-                          <span className="qty-val">{e.quantity}</span>
-                          {" "}
-                          <span className="qty-unit">{e.productId?.unit}</span>
-                        </td>
-                        <td className="clr-green">
-                          ₹{((e.productId?.price || 0) * e.quantity).toFixed(2)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="entry-col-list">
+                {entries.slice(0, 10).map((e, i) => (
+                  <div className="entry-col-card" key={e._id}>
+                    <div className="ecol-left">
+                      <div className="ecol-index">{i + 1}</div>
+                      <div>
+                        <div className="ecol-product">{e.productId?.name}</div>
+                        <div className="ecol-customer">{e.billName || e.customerName || "—"}</div>
+                      </div>
+                    </div>
+                    <div className="ecol-right">
+                      <div className="ecol-time">🕐 {e.time}</div>
+                      <div className="ecol-qty">
+                        {e.quantity} <span className="qty-unit">{e.productId?.unit}</span>
+                      </div>
+                      <div className="ecol-revenue">₹{((e.productId?.price || 0) * e.quantity).toFixed(2)}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </>
           ) : (

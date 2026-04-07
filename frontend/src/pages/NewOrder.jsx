@@ -148,15 +148,30 @@ function NewOrder() {
                 style={{ background: bgColor }}
               >
                 <span className="no-row-name">{p.name}</span>
-                <input
-                  type="number"
-                  min="0"
-                  className="no-row-input"
-                  value={qty === 0 ? "" : qty}
-                  placeholder="0"
-                  onChange={(e) => handleQtyChange(p._id, e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                />
+                <div className="qty-control-group">
+                  <button
+                    className="qty-btn"
+                    onClick={() => handleQtyChange(p._id, qty - 1)}
+                    disabled={qty <= 0}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="0"
+                    className="no-row-input"
+                    value={qty === 0 ? "" : qty}
+                    placeholder="0"
+                    onChange={(e) => handleQtyChange(p._id, e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                  />
+                  <button
+                    className="qty-btn"
+                    onClick={() => handleQtyChange(p._id, qty + 1)}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             );
           })}

@@ -1,0 +1,231 @@
+[{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba1079981"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ શક્તિ દૂધ",
+  "price": 32,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "0.5 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.243Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.243Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba1079984"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ બફેલો મિલ્ક ૬ લીટર",
+  "price": 438,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "6 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.290Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.290Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba1079987"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ બફેલો મિલ્ક ૧ લીટર",
+  "price": 73,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "1 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.305Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.305Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba107998a"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ ગોલ્ડ ૬ લીટર",
+  "price": 408,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "6 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.321Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.321Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba107998d"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ ગોલ્ડ ૧ લીટર",
+  "price": 68,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "1 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.337Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.337Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba1079990"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ ગોલ્ડ ૫૦૦ મીલી",
+  "price": 35,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "0.5 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.348Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.348Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09b4abf0b446ba1079993"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "અમૂલ તાઝ઼ા દૂધ ૫૦૦ મીલી",
+  "price": 28,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "0.5 Litre",
+  "category": "Milk",
+  "createdAt": {
+    "$date": "2026-04-04T05:02:02.355Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:02:02.355Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09e1abf0b446ba10799db"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "Sumul Gaynu Dudh 500ml",
+  "price": 28,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "0.5 Litre",
+  "category": "Milk Products",
+  "createdAt": {
+    "$date": "2026-04-04T05:14:02.954Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:16:06.367Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09e35bf0b446ba10799e5"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "Amul Slim Trim Dudh 500ml",
+  "price": 25,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "0.5 Litre",
+  "category": "Milk Products",
+  "createdAt": {
+    "$date": "2026-04-04T05:14:29.489Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:15:59.223Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09e46bf0b446ba10799ea"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "Skim Milk 6 Litre",
+  "price": 226,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "6 Litre",
+  "category": "Milk Products",
+  "createdAt": {
+    "$date": "2026-04-04T05:14:46.801Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:15:52.087Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d09e5fbf0b446ba10799ef"
+  },
+  "user": {
+    "$oid": "69d09733bf0b446ba1079932"
+  },
+  "name": "Sumul Punjabi Dahi 1 kg",
+  "price": 79,
+  "buyPrice": 0,
+  "crateSize": 1,
+  "unit": "kg",
+  "category": "General",
+  "createdAt": {
+    "$date": "2026-04-04T05:15:11.887Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T05:15:44.766Z"
+  },
+  "__v": 0
+}]

@@ -29,7 +29,20 @@ const productSchema = new mongoose.Schema(
     },
     unit: {
       type: String,
-      enum: ['0.5 Litre', '1 Litre', '6 Litre', 'kg', 'packet', 'piece'],
+      enum: [
+        '0.17 Litre',
+        '0.2 Litre',
+        '0.25 Litre',
+        '0.48 Litre',
+        '0.5 Litre',
+        '1 Litre',
+        '6 Litre',
+        '0.4 kg',
+        '5 kg',
+        'kg',
+        'packet',
+        'piece',
+      ],
       default: '1 Litre',
     },
     category: {

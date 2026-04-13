@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Entry = require("../models/Entry");
+const { ensureDefaultProductsForUser } = require("./productController");
 const sendEmail = require("../utils/sendEmail");
 
 const sanitizeUser = (user) => ({
@@ -51,6 +52,8 @@ exports.register = async (req, res) => {
       email: email.trim().toLowerCase(),
       password: password.trim(),
     });
+
+    await ensureDefaultProductsForUser(user._id);
 
     const token = getSignedJwtToken(user._id);
 

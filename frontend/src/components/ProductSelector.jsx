@@ -73,7 +73,7 @@ function ProductSelector({ products, value, onChange, error }) {
               <div className="no-results">No products found</div>
             )}
           </div>
-        </div>
+        </div> 
       )}
     </div>
   );

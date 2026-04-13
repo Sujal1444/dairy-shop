@@ -1,10 +1,32 @@
 const Product = require('../models/Product');
+const {
+  DEFAULT_PRODUCTS,
+  productKey,
+  sortProductsForDisplay,
+} = require('../data/defaultProducts');
+
+const ensureDefaultProductsForUser = async (userId) => {
+  const existingProducts = await Product.find({ user: userId }).select('name unit');
+  const existingKeys = new Set(existingProducts.map(productKey));
+
+  const missingProducts = DEFAULT_PRODUCTS.filter(
+    (product) => !existingKeys.has(productKey(product))
+  ).map((product) => ({
+    ...product,
+    user: userId,
+  }));
+
+  if (missingProducts.length > 0) {
+    await Product.insertMany(missingProducts, { ordered: false });
+  }
+};
 
 // GET /api/products
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({ user: req.user.id }).sort({ createdAt: -1 });
-    res.json({ success: true, data: products });
+    await ensureDefaultProductsForUser(req.user.id);
+    const products = await Product.find({ user: req.user.id });
+    res.json({ success: true, data: sortProductsForDisplay(products) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -75,4 +97,10 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, createProduct, updateProduct, deleteProduct };
+module.exports = {
+  getAllProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  ensureDefaultProductsForUser,
+};

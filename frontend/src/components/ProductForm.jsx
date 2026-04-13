@@ -1,7 +1,30 @@
 import { useState, useEffect } from "react";
 
-const UNITS = ["0.5 Litre", "1 Litre", "6 Litre", "kg", "packet", "piece"];
-const CATS = ["Milk Products", "Fermented", "Cheese", "Spreads", "General"];
+const UNITS = [
+  "0.17 Litre",
+  "0.2 Litre",
+  "0.25 Litre",
+  "0.48 Litre",
+  "0.5 Litre",
+  "1 Litre",
+  "6 Litre",
+  "0.4 kg",
+  "5 kg",
+  "kg",
+  "packet",
+  "piece",
+];
+const CATS = [
+  "Milk",
+  "Milk Products",
+  "Buttermilk",
+  "Curd",
+  "Lassi",
+  "Fermented",
+  "Cheese",
+  "Spreads",
+  "General",
+];
 
 function ProductForm({ product, onSubmit, onClose }) {
   const [form, setForm] = useState({

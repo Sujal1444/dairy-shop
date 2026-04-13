@@ -1,21 +1,20 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { getProducts, createEntry } from "../services/api";
 import { useToast } from "../context/ToastContext";
 
-// Color palette cycling through rows — matches the screenshot style
 const ROW_COLORS = [
-  "#b9f6ca", // green
-  "#ffe0b2", // orange
-  "#bbdefb", // blue
-  "#b3e5fc", // sky blue
-  "#d1c4e9", // lavender
-  "#fff9c4", // yellow
-  "#f8bbd0", // pink
-  "#dcedc8", // lime
-  "#b2ebf2", // teal
-  "#cfd8dc", // blue-grey
-  "#ffe082", // amber
-  "#d7ccc8", // brown-grey
+  "#b9f6ca",
+  "#ffe0b2",
+  "#bbdefb",
+  "#b3e5fc",
+  "#d1c4e9",
+  "#fff9c4",
+  "#f8bbd0",
+  "#dcedc8",
+  "#b2ebf2",
+  "#cfd8dc",
+  "#ffe082",
+  "#d7ccc8",
 ];
 
 const todayStr = () => new Date().toISOString().split("T")[0];
@@ -41,10 +40,12 @@ function NewOrder() {
       const prods = res.data.data || [];
       setProducts(prods);
       const init = {};
-      prods.forEach((p) => (init[p._id] = 0));
+      prods.forEach((p) => {
+        init[p._id] = 0;
+      });
       setQuantities(init);
     } catch {
-      addToast("Failed to load products", "error");
+      addToast("પ્રોડક્ટ્સ લોડ કરવામાં સમસ્યા આવી", "error");
     } finally {
       setLoading(false);
     }
@@ -60,19 +61,22 @@ function NewOrder() {
     (sum, p) => sum + p.price * quantities[p._id],
     0
   );
-  const totalQty = orderedItems.reduce((s, p) => s + quantities[p._id], 0);
+  const totalQty = orderedItems.reduce((sum, p) => sum + quantities[p._id], 0);
 
   const handleReset = () => {
     const init = {};
-    products.forEach((p) => (init[p._id] = 0));
+    products.forEach((p) => {
+      init[p._id] = 0;
+    });
     setQuantities(init);
   };
 
   const handleSubmit = async () => {
     if (orderedItems.length === 0) {
-      addToast("Please add at least one product", "error");
+      addToast("ઓછામાં ઓછો એક પ્રોડક્ટ ઉમેરો", "error");
       return;
     }
+
     setSubmitting(true);
     try {
       const billId = `BILL-${Date.now()}`;
@@ -86,11 +90,12 @@ function NewOrder() {
         time,
         status: "unpaid",
       }));
-      await Promise.all(entries.map((e) => createEntry(e)));
-      addToast(`Order placed! (ગ્રાહક નં: ${CUSTOMER_ID})`, "success");
+
+      await Promise.all(entries.map((entry) => createEntry(entry)));
+      addToast(`ઓર્ડર સચવાયો! (ગ્રાહક નં: ${CUSTOMER_ID})`, "success");
       handleReset();
     } catch (err) {
-      addToast(err.response?.data?.message || "Failed to place order", "error");
+      addToast(err.response?.data?.message || "ઓર્ડર સચવવામાં સમસ્યા આવી", "error");
     } finally {
       setSubmitting(false);
     }
@@ -98,11 +103,10 @@ function NewOrder() {
 
   return (
     <div className="no-page">
-      {/* ── Top Header Bar ── */}
       <div className="no-header">
         <div className="no-header-left">
           <span className="no-header-title">નવો ઓર્ડર</span>
-          <span className="no-header-sub">New Order</span>
+          <span className="no-header-sub">ઓર્ડર નોંધ</span>
         </div>
         <div className="no-header-right">
           <div className="no-customer-wrap">
@@ -118,21 +122,19 @@ function NewOrder() {
         </div>
       </div>
 
-      {/* ── Column Labels ── */}
       <div className="no-col-labels">
-        <span>Product</span>
-        <span>Qty</span>
+        <span>વિગત</span>
+        <span>જથ્થો</span>
       </div>
 
-      {/* ── Product List ── */}
       {loading ? (
         <div className="loader" style={{ margin: "40px auto" }}>
           <div className="spinner" />
         </div>
       ) : products.length === 0 ? (
         <div className="no-empty">
-          <span>🧴</span>
-          <p>No products yet. Add products first.</p>
+          <span>દૂધ</span>
+          <p>હજુ સુધી કોઈ પ્રોડક્ટ નથી. પહેલા પ્રોડક્ટ ઉમેરો.</p>
         </div>
       ) : (
         <div className="no-list">
@@ -154,7 +156,7 @@ function NewOrder() {
                     onClick={() => handleQtyChange(p._id, qty - 1)}
                     disabled={qty <= 0}
                   >
-                    −
+                    -
                   </button>
                   <input
                     type="number"
@@ -178,22 +180,21 @@ function NewOrder() {
         </div>
       )}
 
-      {/* ── Footer Summary + Actions ── */}
       {!loading && (
         <div className="no-footer">
           <div className="no-footer-summary">
             <div className="no-footer-stat">
-              <span>Items</span>
+              <span>આઇટમ</span>
               <strong>{orderedItems.length}</strong>
             </div>
             <div className="no-footer-divider" />
             <div className="no-footer-stat">
-              <span>Qty</span>
+              <span>જથ્થો</span>
               <strong>{totalQty}</strong>
             </div>
             <div className="no-footer-divider" />
             <div className="no-footer-stat">
-              <span>Total</span>
+              <span>કુલ</span>
               <strong className="no-footer-amount">₹{totalAmount.toFixed(2)}</strong>
             </div>
           </div>
@@ -202,9 +203,9 @@ function NewOrder() {
               className="no-btn-reset"
               onClick={handleReset}
               disabled={submitting}
-              title="Reset all quantities"
+              title="બધા જથ્થા સાફ કરો"
             >
-              ↺ Reset
+              ↺ સાફ કરો
             </button>
             <button
               id="place-order-btn"
@@ -212,7 +213,7 @@ function NewOrder() {
               onClick={handleSubmit}
               disabled={submitting || orderedItems.length === 0}
             >
-              {submitting ? "Saving…" : "✓ Place Order"}
+              {submitting ? "સચવાઈ રહ્યું છે..." : "✓ ઓર્ડર મૂકો"}
             </button>
           </div>
         </div>

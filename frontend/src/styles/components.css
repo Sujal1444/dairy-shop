@@ -220,6 +220,114 @@
   .grand-total-box { width: 100%; justify-content: space-between; }
 }
 
+@media (max-width: 640px) {
+  .btn {
+    min-height: 44px;
+    justify-content: center;
+    padding: 11px 16px;
+  }
+
+  .overlay {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .modal,
+  .modal-wide {
+    width: min(100%, 100%);
+    max-width: none;
+    max-height: min(88vh, 720px);
+    padding: 20px 16px;
+    border-radius: 22px 22px 18px 18px;
+    box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+  }
+
+  .modal-header {
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .form-group label {
+    margin-bottom: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-input,
+  .selector-display,
+  .selector-search {
+    min-height: 46px;
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .selected-name,
+  .placeholder {
+    font-size: 15px;
+  }
+
+  .selected-meta,
+  .option-cat {
+    font-size: 11px;
+  }
+
+  .selector-dropdown {
+    top: calc(100% + 6px);
+    padding: 6px;
+  }
+
+  .selector-option {
+    padding: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .bill-prod-list {
+    gap: 12px;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .bill-prod-row {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+
+  .remove-row-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .bill-form-footer {
+    margin-top: 18px;
+  }
+
+  .grand-total-box {
+    padding: 12px 14px;
+  }
+
+  .grand-total-box strong {
+    font-size: 22px;
+  }
+}
+
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 /* ─── PASSWORD FIELD ────────────────────────────── */
 .password-field {

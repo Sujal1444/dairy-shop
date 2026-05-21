@@ -35,7 +35,7 @@ const getSignedJwtToken = (id) => {
 // ===============================
 // 🔐 REGISTER
 // ===============================
-exports.register = async (req, res) => {
+exports.register = async (req, res) => {r
   try {
     const { name, dairyName, email, password } = req.body;
 
